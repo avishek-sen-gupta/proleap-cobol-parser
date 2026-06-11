@@ -1461,7 +1461,7 @@ evaluateWhenOther
    ;
 
 evaluateValue
-   : identifier | literal | arithmeticExpression
+   : literal | identifier | arithmeticExpression
    ;
 
 // exec cics statement
@@ -2295,7 +2295,7 @@ power
    ;
 
 basis
-   : LPARENCHAR arithmeticExpression RPARENCHAR | identifier | literal
+   : LPARENCHAR arithmeticExpression RPARENCHAR | literal | identifier
    ;
 
 // condition ----------------------------------

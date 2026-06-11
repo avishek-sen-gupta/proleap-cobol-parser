@@ -27,9 +27,13 @@ public class TagUtils {
 				untaggedText = untaggedText.replace(tag, "");
 			}
 
-			final String execLineTextCleaned = untaggedText.trim() + CobolPreprocessor.WS;
+			final String trimmed = untaggedText.trim();
 
-			sb.append(execLineTextCleaned);
+			if (trimmed.startsWith("*>")) {
+				continue;
+			}
+
+			sb.append(trimmed + CobolPreprocessor.WS);
 		}
 
 		return sb.toString().trim();
