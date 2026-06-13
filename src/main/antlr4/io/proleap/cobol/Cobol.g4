@@ -1467,7 +1467,7 @@ evaluateValue
 // exec cics statement
 
 execCicsStatement
-   : EXECCICSLINE+
+   : EXECCICSLINE* EXECCICSENDLINE
    ;
 
 // exec sql statement
@@ -3232,7 +3232,13 @@ IDENTIFIER : [a-zA-Z0-9]+ ([-_]+ [a-zA-Z0-9]+)*;
 
 // whitespace, line breaks, comments, ...
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
-EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
+// An EXEC CICS block is rewritten by the preprocessor into one *>EXECCICS marker
+// line per source line, with a '}' (EXEC_END_TAG) appended after END-EXEC. Split
+// the '}'-terminated END line from newline-terminated continuation lines so the
+// parser can delimit ADJACENT statements (which lack an intervening period); see
+// execCicsStatement : EXECCICSLINE* EXECCICSENDLINE.
+EXECCICSENDLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* '}';
+EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r');
 EXECSQLIMSLINE : EXECSQLIMSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 EXECSQLLINE : EXECSQLTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*;

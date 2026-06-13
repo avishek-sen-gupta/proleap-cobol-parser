@@ -757,7 +757,11 @@ public class ScopeImpl extends CobolDivisionElementImpl implements Scope {
 		if (result == null) {
 			result = new ExecCicsStatementImpl(programUnit, this, ctx);
 
-			final String execCicsText = TagUtils.getUntaggedText(ctx.EXECCICSLINE(), CobolPreprocessor.EXEC_CICS_TAG,
+			// Continuation lines (EXECCICSLINE) followed by the '}'-terminated end
+			// line (EXECCICSENDLINE); combine in source order for the full text.
+			final List<org.antlr.v4.runtime.tree.TerminalNode> execCicsLines = new ArrayList<>(ctx.EXECCICSLINE());
+			execCicsLines.add(ctx.EXECCICSENDLINE());
+			final String execCicsText = TagUtils.getUntaggedText(execCicsLines, CobolPreprocessor.EXEC_CICS_TAG,
 					CobolPreprocessor.EXEC_END_TAG);
 			result.setExecCicsText(execCicsText);
 
