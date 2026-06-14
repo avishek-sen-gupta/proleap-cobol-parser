@@ -961,7 +961,7 @@ dataDescriptionEntryFormat3
    ;
 
 dataDescriptionEntryExecSql
-   : EXECSQLLINE+ DOT_FS?
+   : EXECSQLLINE* EXECSQLENDLINE DOT_FS?
    ;
 
 dataAlignedClause
@@ -1473,7 +1473,7 @@ execCicsStatement
 // exec sql statement
 
 execSqlStatement
-   : EXECSQLLINE+
+   : EXECSQLLINE* EXECSQLENDLINE
    ;
 
 // exec sql ims statement
@@ -3240,7 +3240,12 @@ NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 EXECCICSENDLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* '}';
 EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r');
 EXECSQLIMSLINE : EXECSQLIMSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
-EXECSQLLINE : EXECSQLTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
+// Mirror the EXEC CICS split (see EXECCICSENDLINE/EXECCICSLINE above): the
+// '}'-terminated END line is a distinct token from newline-terminated
+// continuation lines, so execSqlStatement : EXECSQLLINE* EXECSQLENDLINE can
+// delimit ADJACENT EXEC SQL statements that lack an intervening period.
+EXECSQLENDLINE : EXECSQLTAG WS ~('\n' | '\r' | '}')* '}';
+EXECSQLLINE : EXECSQLTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r');
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*;
 COMMENTLINE : COMMENTTAG WS ~('\n' | '\r')* -> channel(HIDDEN);
 WS : [ \t\f;]+ -> channel(HIDDEN);

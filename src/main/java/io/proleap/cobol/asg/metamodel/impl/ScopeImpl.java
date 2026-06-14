@@ -795,7 +795,11 @@ public class ScopeImpl extends CobolDivisionElementImpl implements Scope {
 		if (result == null) {
 			result = new ExecSqlStatementImpl(programUnit, this, ctx);
 
-			final String execSqlText = TagUtils.getUntaggedText(ctx.EXECSQLLINE(), CobolPreprocessor.EXEC_SQL_TAG,
+			// Continuation lines (EXECSQLLINE) followed by the '}'-terminated end
+			// line (EXECSQLENDLINE); combine in source order for the full text.
+			final List<org.antlr.v4.runtime.tree.TerminalNode> execSqlLines = new ArrayList<>(ctx.EXECSQLLINE());
+			execSqlLines.add(ctx.EXECSQLENDLINE());
+			final String execSqlText = TagUtils.getUntaggedText(execSqlLines, CobolPreprocessor.EXEC_SQL_TAG,
 					CobolPreprocessor.EXEC_END_TAG);
 			result.setExecSqlText(execSqlText);
 
