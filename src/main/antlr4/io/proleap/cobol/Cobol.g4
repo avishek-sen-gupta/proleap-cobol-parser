@@ -2389,7 +2389,7 @@ subscript
    ;
 
 argument
-   : literal | identifier | qualifiedDataName integerLiteral? | indexName integerLiteral? | arithmeticExpression
+   : arithmeticExpression | qualifiedDataName integerLiteral? | indexName integerLiteral?
    ;
 
 // qualified data name ----------------------------------
