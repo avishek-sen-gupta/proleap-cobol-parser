@@ -23,9 +23,33 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 
 	protected final Pattern commentEntryTriggerLinePattern;
 
+	/**
+	 * The same paragraph headers, without the separator period they should have
+	 * been written with, and restricted to area A: a comment-entry paragraph header
+	 * can only begin there. One whitespace character is consumed as the separator
+	 * between the header and the comment entry, in place of the period.
+	 */
+	protected final Pattern commentEntryTriggerLineWithoutSeparatorPattern;
+
 	protected boolean foundCommentEntryTriggerInPreviousLine = false;
 
+	/**
+	 * The comment-entry paragraphs all belong to the identification division, and
+	 * their keywords are only unambiguously headers there. Elsewhere a line can
+	 * begin with one of them and mean something else -- notably a continuation line
+	 * of an EXEC block, such as SECURITY of an EXEC CICS QUERY SECURITY -- and
+	 * tagging it would turn a line of a real statement into commentary, which is a
+	 * silently dropped statement rather than a parse error.
+	 */
+	protected boolean isInIdentificationDivision = true;
+
 	protected boolean isInCommentEntry = false;
+
+	protected final Pattern identificationDivisionPattern = Pattern
+			.compile("[ \\t]{0,3}(IDENTIFICATION|ID)[ \\t]+DIVISION.*", Pattern.CASE_INSENSITIVE);
+
+	protected final Pattern otherDivisionPattern = Pattern
+			.compile("[ \\t]{0,3}(ENVIRONMENT|DATA|PROCEDURE)[ \\t]+DIVISION.*", Pattern.CASE_INSENSITIVE);
 
 	protected final String[] triggersEnd = new String[] { "PROGRAM-ID.", "AUTHOR.", "INSTALLATION.", "DATE-WRITTEN.",
 			"DATE-COMPILED.", "SECURITY.", "ENVIRONMENT", "DATA.", "PROCEDURE." };
@@ -33,10 +57,35 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	protected final String[] triggersStart = new String[] { "AUTHOR.", "INSTALLATION.", "DATE-WRITTEN.",
 			"DATE-COMPILED.", "SECURITY.", "REMARKS." };
 
+	protected final String[] triggersStartWithoutSeparator = new String[] { "AUTHOR", "INSTALLATION", "DATE-WRITTEN",
+			"DATE-COMPILED", "SECURITY", "REMARKS" };
+
 	public CobolCommentEntriesMarkerImpl() {
 		final String commentEntryTriggerLineFormat = new String(
-				"([ \\t]*)(" + String.join("|", triggersStart) + ")(.+)");
+				"([ \\t]*)(" + alternationOfLiterals(triggersStart) + ")(.+)");
 		commentEntryTriggerLinePattern = Pattern.compile(commentEntryTriggerLineFormat, Pattern.CASE_INSENSITIVE);
+
+		final String commentEntryTriggerLineWithoutSeparatorFormat = new String(
+				"([ \\t]{0,3})(" + alternationOfLiterals(triggersStartWithoutSeparator) + ")[ \\t]([ \\t]*.+)");
+		commentEntryTriggerLineWithoutSeparatorPattern = Pattern
+				.compile(commentEntryTriggerLineWithoutSeparatorFormat, Pattern.CASE_INSENSITIVE);
+	}
+
+	/**
+	 * An alternation matching any one of the given triggers literally. The
+	 * separator period of a trigger such as AUTHOR. is a regex metacharacter and
+	 * has to be quoted: unquoted, it matches any character, so the pattern also
+	 * accepts a trigger keyword followed by something that is not a separator
+	 * period at all.
+	 */
+	protected String alternationOfLiterals(final String[] triggers) {
+		final List<String> quotedTriggers = new ArrayList<String>();
+
+		for (final String trigger : triggers) {
+			quotedTriggers.add(Pattern.quote(trigger));
+		}
+
+		return String.join("|", quotedTriggers);
 	}
 
 	protected CobolLine buildMultiLineCommentEntryLine(final CobolLine line) {
@@ -50,9 +99,9 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	protected CobolLine escapeCommentEntry(final CobolLine line) {
 		final CobolLine result;
 
-		final Matcher matcher = commentEntryTriggerLinePattern.matcher(line.getContentArea());
+		final Matcher matcher = matchCommentEntryTriggerLine(line);
 
-		if (matcher.matches()) {
+		if (matcher != null) {
 			final String whitespace = matcher.group(1);
 			final String trigger = matcher.group(2);
 			final String commentEntry = matcher.group(3);
@@ -65,6 +114,27 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 		}
 
 		return result;
+	}
+
+	/**
+	 * The matcher of whichever comment-entry trigger the given line starts with,
+	 * the header written with its separator period taking precedence over the
+	 * header written without one; null, if the line starts no comment entry.
+	 */
+	protected Matcher matchCommentEntryTriggerLine(final CobolLine line) {
+		final String contentArea = line.getContentArea();
+		final Matcher matcher = commentEntryTriggerLinePattern.matcher(contentArea);
+
+		if (matcher.matches()) {
+			return matcher;
+		}
+
+		if (!isInIdentificationDivision) {
+			return null;
+		}
+
+		final Matcher matcherWithoutSeparator = commentEntryTriggerLineWithoutSeparatorPattern.matcher(contentArea);
+		return matcherWithoutSeparator.matches() ? matcherWithoutSeparator : null;
 	}
 
 	protected boolean isInCommentEntry(final CobolLine line, final boolean isContentAreaAEmpty,
@@ -88,6 +158,8 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	@Override
 	public CobolLine processLine(final CobolLine line) {
 		final CobolLine result;
+
+		trackIdentificationDivision(line);
 
 		if (line.getFormat().isCommentEntryMultiLine()) {
 			result = processMultiLineCommentEntry(line);
@@ -117,7 +189,7 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	 * non-comment entry.
 	 */
 	protected CobolLine processMultiLineCommentEntry(final CobolLine line) {
-		final boolean foundCommentEntryTriggerInCurrentLine = startsWithTrigger(line, triggersStart);
+		final boolean foundCommentEntryTriggerInCurrentLine = startsCommentEntry(line);
 		final CobolLine result;
 
 		if (foundCommentEntryTriggerInCurrentLine) {
@@ -143,7 +215,7 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	}
 
 	protected CobolLine processSingleLineCommentEntry(final CobolLine line) {
-		final boolean foundCommentEntryTriggerInCurrentLine = startsWithTrigger(line, triggersStart);
+		final boolean foundCommentEntryTriggerInCurrentLine = startsCommentEntry(line);
 		final CobolLine result;
 
 		if (foundCommentEntryTriggerInCurrentLine) {
@@ -153,6 +225,30 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 		}
 
 		return result;
+	}
+
+	/**
+	 * Checks, whether given line starts a comment entry: with a trigger keyword
+	 * and its separator period, or with a trigger keyword and no separator period
+	 * at all, the latter in area A only.
+	 */
+	protected boolean startsCommentEntry(final CobolLine line) {
+		return startsWithTrigger(line, triggersStart) || matchCommentEntryTriggerLine(line) != null;
+	}
+
+	/**
+	 * Notes whether the lines that follow belong to an identification division. A
+	 * batch of programs holds one identification division per program unit, so this
+	 * turns back on rather than latching off.
+	 */
+	protected void trackIdentificationDivision(final CobolLine line) {
+		final String contentArea = line.getContentArea();
+
+		if (identificationDivisionPattern.matcher(contentArea).matches()) {
+			isInIdentificationDivision = true;
+		} else if (otherDivisionPattern.matcher(contentArea).matches()) {
+			isInIdentificationDivision = false;
+		}
 	}
 
 	/**
