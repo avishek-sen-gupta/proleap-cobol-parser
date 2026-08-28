@@ -1,0 +1,4 @@
+      *>  SECURITY TAG DETAILS
+      *>  *********************
+       01  SOME-RECORD.
+           05  SOME-FIELD          PIC X(10).

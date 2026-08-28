@@ -42,8 +42,11 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	 * of an EXEC block, such as SECURITY of an EXEC CICS QUERY SECURITY -- and
 	 * tagging it would turn a line of a real statement into commentary, which is a
 	 * silently dropped statement rather than a parse error.
+	 *
+	 * Starts off closed: a copy book is preprocessed on its own and declares no
+	 * identification division at all, so a header keyword in one is never a header.
 	 */
-	protected boolean isInIdentificationDivision = true;
+	protected boolean isInIdentificationDivision = false;
 
 	protected boolean isInCommentEntry = false;
 
@@ -122,6 +125,10 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	 * The matcher of whichever comment-entry trigger the given line starts with,
 	 * the header written with its separator period taking precedence over the
 	 * header written without one; null, if the line starts no comment entry.
+	 *
+	 * A comment line cannot be a header, and its text is free prose in which a
+	 * header word regularly appears, so a banner line beginning with one of them
+	 * would otherwise turn the whole banner into a comment entry.
 	 */
 	protected Matcher matchCommentEntryTriggerLine(final CobolLine line) {
 		final String contentArea = line.getContentArea();
@@ -131,7 +138,7 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 			return matcher;
 		}
 
-		if (!isInIdentificationDivision) {
+		if (!isInIdentificationDivision || CobolLineTypeEnum.COMMENT.equals(line.getType())) {
 			return null;
 		}
 
