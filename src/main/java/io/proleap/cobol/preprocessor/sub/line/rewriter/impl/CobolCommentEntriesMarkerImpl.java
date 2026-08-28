@@ -26,8 +26,10 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 	/**
 	 * The same paragraph headers, without the separator period they should have
 	 * been written with, and restricted to area A: a comment-entry paragraph header
-	 * can only begin there. One whitespace character is consumed as the separator
-	 * between the header and the comment entry, in place of the period.
+	 * can only begin there. The whitespace separating the header from the comment
+	 * entry stays part of the comment entry: the tag written in place of the period
+	 * has to be followed by whitespace of its own, or it does not read as the start
+	 * of a comment-entry line at all.
 	 */
 	protected final Pattern commentEntryTriggerLineWithoutSeparatorPattern;
 
@@ -66,7 +68,7 @@ public class CobolCommentEntriesMarkerImpl implements CobolCommentEntriesMarker 
 		commentEntryTriggerLinePattern = Pattern.compile(commentEntryTriggerLineFormat, Pattern.CASE_INSENSITIVE);
 
 		final String commentEntryTriggerLineWithoutSeparatorFormat = new String(
-				"([ \\t]{0,3})(" + alternationOfLiterals(triggersStartWithoutSeparator) + ")[ \\t]([ \\t]*.+)");
+				"([ \\t]{0,3})(" + alternationOfLiterals(triggersStartWithoutSeparator) + ")([ \\t].+)");
 		commentEntryTriggerLineWithoutSeparatorPattern = Pattern
 				.compile(commentEntryTriggerLineWithoutSeparatorFormat, Pattern.CASE_INSENSITIVE);
 	}
