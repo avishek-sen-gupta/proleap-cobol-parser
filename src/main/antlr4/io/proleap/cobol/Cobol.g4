@@ -1161,7 +1161,7 @@ sentence
    ;
 
 statement
-   : acceptStatement | addStatement | alterStatement | callStatement | cancelStatement | closeStatement | computeStatement | continueStatement | deleteStatement | disableStatement | displayStatement | divideStatement | enableStatement | entryStatement | evaluateStatement | exhibitStatement | execCicsStatement | execSqlStatement | execSqlImsStatement | exitStatement | generateStatement | gobackStatement | goToStatement | ifStatement | initializeStatement | initiateStatement | inspectStatement | mergeStatement | moveStatement | multiplyStatement | nextSentenceStatement | openStatement | performStatement | purgeStatement | readStatement | receiveStatement | releaseStatement | returnStatement | rewriteStatement | searchStatement | sendStatement | setStatement | sortStatement | startStatement | stopStatement | stringStatement | subtractStatement | terminateStatement | unstringStatement | writeStatement
+   : acceptStatement | addStatement | alterStatement | callStatement | cancelStatement | closeStatement | computeStatement | continueStatement | deleteStatement | disableStatement | displayStatement | divideStatement | enableStatement | entryStatement | evaluateStatement | exhibitStatement | execCicsStatement | execSqlStatement | execSqlImsStatement | exitStatement | generateStatement | gobackStatement | goToStatement | ifStatement | initializeStatement | initiateStatement | inspectStatement | mergeStatement | moveStatement | multiplyStatement | nextSentenceStatement | openStatement | performStatement | purgeStatement | readStatement | receiveStatement | releaseStatement | returnStatement | rewriteStatement | searchStatement | sendStatement | setStatement | sortStatement | startStatement | stopStatement | stringStatement | subtractStatement | terminateStatement | unstringStatement | writeStatement | xmlGenerateStatement
    ;
 
 // accept statement
@@ -2224,6 +2224,16 @@ writeNotAtEndOfPagePhrase
    : NOT AT? (END_OF_PAGE | EOP) statement*
    ;
 
+// xml generate statement
+
+xmlGenerateStatement
+   : XML GENERATE identifier FROM identifier xmlCountInPhrase? onExceptionClause? notOnExceptionClause? END_XML?
+   ;
+
+xmlCountInPhrase
+   : COUNT IN identifier
+   ;
+
 // statement phrases ----------------------------------
 
 atEndPhrase
@@ -2821,6 +2831,7 @@ END_STRING : E N D MINUSCHAR S T R I N G;
 END_SUBTRACT : E N D MINUSCHAR S U B T R A C T;
 END_UNSTRING : E N D MINUSCHAR U N S T R I N G;
 END_WRITE : E N D MINUSCHAR W R I T E;
+END_XML : E N D MINUSCHAR X M L;
 ENDING : E N D I N F;
 ENTER : E N T E R;
 ENTRY : E N T R Y;
@@ -3160,6 +3171,7 @@ WITH : W I T H;
 WORDS : W O R D S;
 WORKING_STORAGE : W O R K I N G MINUSCHAR S T O R A G E;
 WRITE : W R I T E;
+XML : X M L;
 YEAR : Y E A R;
 YYYYMMDD : Y Y Y Y M M D D;
 YYYYDDD : Y Y Y Y D D D;

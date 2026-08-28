@@ -462,6 +462,15 @@ public class CobolProcedureStatementVisitorImpl extends AbstractCobolParserVisit
 	}
 
 	@Override
+	public Boolean visitXmlGenerateStatement(final CobolParser.XmlGenerateStatementContext ctx) {
+		final Scope scope = findScope(ctx);
+
+		scope.addXmlGenerateStatement(ctx);
+
+		return visitChildren(ctx);
+	}
+
+	@Override
 	public Boolean visitWriteStatement(final CobolParser.WriteStatementContext ctx) {
 		final Scope scope = findScope(ctx);
 

@@ -101,6 +101,7 @@ import io.proleap.cobol.CobolParser.UnstringStatementContext;
 import io.proleap.cobol.CobolParser.WriteAtEndOfPagePhraseContext;
 import io.proleap.cobol.CobolParser.WriteNotAtEndOfPagePhraseContext;
 import io.proleap.cobol.CobolParser.WriteStatementContext;
+import io.proleap.cobol.CobolParser.XmlGenerateStatementContext;
 import io.proleap.cobol.asg.metamodel.ProgramUnit;
 import io.proleap.cobol.asg.metamodel.Scope;
 import io.proleap.cobol.asg.metamodel.call.Call;
@@ -226,9 +227,11 @@ import io.proleap.cobol.asg.metamodel.procedure.unstring.impl.UnstringStatementI
 import io.proleap.cobol.asg.metamodel.procedure.write.AtEndOfPagePhrase;
 import io.proleap.cobol.asg.metamodel.procedure.write.NotAtEndOfPagePhrase;
 import io.proleap.cobol.asg.metamodel.procedure.write.WriteStatement;
+import io.proleap.cobol.asg.metamodel.procedure.xml.XmlGenerateStatement;
 import io.proleap.cobol.asg.metamodel.procedure.write.impl.AtEndOfPagePhraseImpl;
 import io.proleap.cobol.asg.metamodel.procedure.write.impl.NotAtEndOfPagePhraseImpl;
 import io.proleap.cobol.asg.metamodel.procedure.write.impl.WriteStatementImpl;
+import io.proleap.cobol.asg.metamodel.procedure.xml.impl.XmlGenerateStatementImpl;
 import io.proleap.cobol.asg.metamodel.valuestmt.ArithmeticValueStmt;
 import io.proleap.cobol.asg.metamodel.valuestmt.ConditionValueStmt;
 import io.proleap.cobol.asg.metamodel.valuestmt.ValueStmt;
@@ -1821,6 +1824,45 @@ public class ScopeImpl extends CobolDivisionElementImpl implements Scope {
 			if (ctx.notInvalidKeyPhrase() != null) {
 				final NotInvalidKeyPhrase notInvalidKey = createNotInvalidKeyPhrase(ctx.notInvalidKeyPhrase());
 				result.setNotInvalidKeyPhrase(notInvalidKey);
+			}
+
+			registerStatement(result);
+		}
+
+		return result;
+	}
+
+	@Override
+	public XmlGenerateStatement addXmlGenerateStatement(final XmlGenerateStatementContext ctx) {
+		XmlGenerateStatement result = (XmlGenerateStatement) getASGElement(ctx);
+
+		if (result == null) {
+			result = new XmlGenerateStatementImpl(programUnit, this, ctx);
+
+			// receiver
+			final Call receiverCall = createCall(ctx.identifier().get(0));
+			result.setReceiverCall(receiverCall);
+
+			// from
+			final Call fromCall = createCall(ctx.identifier().get(1));
+			result.setFromCall(fromCall);
+
+			// count in
+			if (ctx.xmlCountInPhrase() != null) {
+				final Call countCall = createCall(ctx.xmlCountInPhrase().identifier());
+				result.setCountCall(countCall);
+			}
+
+			// on exception
+			if (ctx.onExceptionClause() != null) {
+				final OnExceptionClause onException = createOnException(ctx.onExceptionClause());
+				result.setOnExceptionClause(onException);
+			}
+
+			// not on exception
+			if (ctx.notOnExceptionClause() != null) {
+				final NotOnExceptionClause notOnException = createNotOnExceptionClause(ctx.notOnExceptionClause());
+				result.setNotOnExceptionClause(notOnException);
 			}
 
 			registerStatement(result);

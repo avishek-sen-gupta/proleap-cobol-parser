@@ -60,6 +60,7 @@ import io.proleap.cobol.CobolParser.SubtractStatementContext;
 import io.proleap.cobol.CobolParser.TerminateStatementContext;
 import io.proleap.cobol.CobolParser.UnstringStatementContext;
 import io.proleap.cobol.CobolParser.WriteStatementContext;
+import io.proleap.cobol.CobolParser.XmlGenerateStatementContext;
 import io.proleap.cobol.asg.metamodel.procedure.Statement;
 import io.proleap.cobol.asg.metamodel.procedure.accept.AcceptStatement;
 import io.proleap.cobol.asg.metamodel.procedure.add.AddStatement;
@@ -110,6 +111,7 @@ import io.proleap.cobol.asg.metamodel.procedure.subtract.SubtractStatement;
 import io.proleap.cobol.asg.metamodel.procedure.terminate.TerminateStatement;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.UnstringStatement;
 import io.proleap.cobol.asg.metamodel.procedure.write.WriteStatement;
+import io.proleap.cobol.asg.metamodel.procedure.xml.XmlGenerateStatement;
 
 public interface Scope extends CobolDivisionElement {
 
@@ -212,6 +214,8 @@ public interface Scope extends CobolDivisionElement {
 	UnstringStatement addUnstringStatement(UnstringStatementContext ctx);
 
 	WriteStatement addWriteStatement(WriteStatementContext ctx);
+
+	XmlGenerateStatement addXmlGenerateStatement(XmlGenerateStatementContext ctx);
 
 	List<Statement> getStatements();
 }
