@@ -24,6 +24,19 @@ import io.proleap.cobol.preprocessor.sub.line.reader.CobolLineReader;
 
 public class CobolLineReaderImpl implements CobolLineReader {
 
+	/**
+	 * A CBL or PROCESS statement needs no sequence number, and a line carrying
+	 * none of one starts the statement before column 8: in column 1, or wherever
+	 * the programmer indented it to. Anything up to column 7 is the statement
+	 * itself, not a sequence number and an indicator.
+	 */
+	protected final static Pattern compilerDirectingStatementPattern = Pattern
+			.compile("[ \\t]{0,6}(CBL|PROCESS)[ \\t].*", Pattern.CASE_INSENSITIVE);
+
+	protected final static int CONTENT_AREA_A_LENGTH = 4;
+
+	protected final static int CONTENT_AREA_END_INDEX = 72;
+
 	protected CobolLineTypeEnum determineType(final String indicatorArea) {
 		final CobolLineTypeEnum result;
 
@@ -51,9 +64,27 @@ public class CobolLineReaderImpl implements CobolLineReader {
 		return result;
 	}
 
+	/**
+	 * Whether the given line is a CBL or PROCESS statement written without a
+	 * sequence number, so that the statement itself occupies the columns the
+	 * sequence area and the indicator area would otherwise be read from. TANDEM
+	 * has no sequence area to leave out, so the question does not arise there.
+	 */
+	protected boolean isCompilerDirectingStatementWithoutSequenceArea(final String line,
+			final CobolSourceFormatEnum format) {
+		final boolean result = !CobolSourceFormatEnum.TANDEM.equals(format)
+				&& compilerDirectingStatementPattern.matcher(line).matches();
+		return result;
+	}
+
 	@Override
 	public CobolLine parseLine(final String line, final int lineNumber, final CobolParserParams params) {
 		final CobolSourceFormatEnum format = params.getFormat();
+
+		if (isCompilerDirectingStatementWithoutSequenceArea(line, format)) {
+			return parseCompilerDirectingStatementLine(line, lineNumber, params);
+		}
+
 		final Pattern pattern = format.getPattern();
 		final Matcher matcher = pattern.matcher(line);
 
@@ -100,6 +131,28 @@ public class CobolLineReaderImpl implements CobolLineReader {
 					params.getFormat(), params.getDialect(), lineNumber, type);
 		}
 
+		return result;
+	}
+
+	/**
+	 * Reads such a line as the statement it is: the whole of it is content, with
+	 * no sequence number and no indicator in front of it. The comment area of a
+	 * fixed format line is still not part of the statement, so it stays where it
+	 * is and keeps being dropped.
+	 */
+	protected CobolLine parseCompilerDirectingStatementLine(final String line, final int lineNumber,
+			final CobolParserParams params) {
+		final boolean hasCommentArea = CobolSourceFormatEnum.FIXED.equals(params.getFormat());
+		final int commentAreaIndex = hasCommentArea ? Math.min(line.length(), CONTENT_AREA_END_INDEX) : line.length();
+		final String contentArea = line.substring(0, commentAreaIndex);
+		final String commentArea = line.substring(commentAreaIndex);
+
+		final int contentAreaBIndex = Math.min(contentArea.length(), CONTENT_AREA_A_LENGTH);
+		final String contentAreaA = contentArea.substring(0, contentAreaBIndex);
+		final String contentAreaB = contentArea.substring(contentAreaBIndex);
+
+		final CobolLine result = CobolLine.newCobolLine("", CobolPreprocessor.WS, contentAreaA, contentAreaB,
+				commentArea, params.getFormat(), params.getDialect(), lineNumber, CobolLineTypeEnum.NORMAL);
 		return result;
 	}
 

@@ -26,7 +26,7 @@ compilerOptions
    ;
 
 compilerXOpts
-   : XOPTS LPARENCHAR compilerOption (COMMACHAR? compilerOption)* RPARENCHAR
+   : XOPTS LPARENCHAR (compilerOption (COMMACHAR? compilerOption)* | literal) RPARENCHAR
    ;
 
 compilerOption

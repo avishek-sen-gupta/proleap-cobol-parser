@@ -1,0 +1,6 @@
+
+
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CblNoSequenceArea.
+       PROCEDURE DIVISION.
+           DISPLAY 'X'.
