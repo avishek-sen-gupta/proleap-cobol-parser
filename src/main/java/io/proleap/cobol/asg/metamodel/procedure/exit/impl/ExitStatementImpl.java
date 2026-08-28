@@ -20,6 +20,8 @@ public class ExitStatementImpl extends StatementImpl implements ExitStatement {
 
 	protected final ExitStatementContext ctx;
 
+	protected ExitStatementType exitStatementType;
+
 	protected final StatementType statementType = StatementTypeEnum.EXIT;
 
 	public ExitStatementImpl(final ProgramUnit programUnit, final Scope scope, final ExitStatementContext ctx) {
@@ -29,8 +31,18 @@ public class ExitStatementImpl extends StatementImpl implements ExitStatement {
 	}
 
 	@Override
+	public ExitStatementType getExitStatementType() {
+		return exitStatementType;
+	}
+
+	@Override
 	public StatementType getStatementType() {
 		return statementType;
+	}
+
+	@Override
+	public void setExitStatementType(final ExitStatementType exitStatementType) {
+		this.exitStatementType = exitStatementType;
 	}
 
 }

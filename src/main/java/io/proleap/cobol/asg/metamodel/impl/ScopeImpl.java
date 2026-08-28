@@ -156,6 +156,7 @@ import io.proleap.cobol.asg.metamodel.procedure.execsqlims.impl.ExecSqlImsStatem
 import io.proleap.cobol.asg.metamodel.procedure.exhibit.ExhibitStatement;
 import io.proleap.cobol.asg.metamodel.procedure.exhibit.impl.ExhibitStatementImpl;
 import io.proleap.cobol.asg.metamodel.procedure.exit.ExitStatement;
+import io.proleap.cobol.asg.metamodel.procedure.exit.ExitStatement.ExitStatementType;
 import io.proleap.cobol.asg.metamodel.procedure.exit.impl.ExitStatementImpl;
 import io.proleap.cobol.asg.metamodel.procedure.generate.GenerateStatement;
 import io.proleap.cobol.asg.metamodel.procedure.generate.impl.GenerateStatementImpl;
@@ -846,6 +847,20 @@ public class ScopeImpl extends CobolDivisionElementImpl implements Scope {
 
 		if (result == null) {
 			result = new ExitStatementImpl(programUnit, this, ctx);
+
+			final ExitStatementType exitStatementType;
+
+			if (ctx.PROGRAM() != null) {
+				exitStatementType = ExitStatementType.PROGRAM;
+			} else if (ctx.CYCLE() != null) {
+				exitStatementType = ExitStatementType.PERFORM_CYCLE;
+			} else if (ctx.PERFORM() != null) {
+				exitStatementType = ExitStatementType.PERFORM;
+			} else {
+				exitStatementType = ExitStatementType.EXIT;
+			}
+
+			result.setExitStatementType(exitStatementType);
 
 			registerStatement(result);
 		}

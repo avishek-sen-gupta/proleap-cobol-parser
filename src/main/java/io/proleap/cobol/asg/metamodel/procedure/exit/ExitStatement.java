@@ -14,4 +14,12 @@ import io.proleap.cobol.asg.metamodel.procedure.Statement;
  * Defines an end point for a series of procedures
  */
 public interface ExitStatement extends Statement {
+
+	enum ExitStatementType {
+		EXIT, PERFORM, PERFORM_CYCLE, PROGRAM
+	}
+
+	ExitStatementType getExitStatementType();
+
+	void setExitStatementType(ExitStatementType exitStatementType);
 }

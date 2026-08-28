@@ -1495,7 +1495,7 @@ exhibitOperand
 // exit statement
 
 exitStatement
-   : EXIT PROGRAM?
+   : EXIT (PROGRAM | PERFORM CYCLE?)?
    ;
 
 // generate statement
@@ -2757,6 +2757,7 @@ COUNT : C O U N T;
 CRUNCH : C R U N C H;
 CURRENCY : C U R R E N C Y;
 CURSOR : C U R S O R;
+CYCLE : C Y C L E;
 DATA : D A T A;
 DATA_BASE : D A T A MINUSCHAR B A S E;
 DATE : D A T E;
