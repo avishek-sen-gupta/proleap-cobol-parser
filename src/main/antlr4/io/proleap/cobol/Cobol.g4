@@ -423,7 +423,7 @@ recordContainsTo
    ;
 
 labelRecordsClause
-   : LABEL (RECORD IS? | RECORDS ARE?) (OMITTED | STANDARD | dataName+)
+   : LABEL (RECORD | RECORDS) (IS | ARE)? (OMITTED | STANDARD | dataName+)
    ;
 
 valueOfClause
@@ -435,7 +435,7 @@ valuePair
    ;
 
 dataRecordsClause
-   : DATA (RECORD IS? | RECORDS ARE?) dataName+
+   : DATA (RECORD | RECORDS) (IS | ARE)? dataName+
    ;
 
 linageClause
