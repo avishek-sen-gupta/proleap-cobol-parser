@@ -2394,8 +2394,21 @@ length
    : arithmeticExpression
    ;
 
+// A subscript is ONE index expression, so arithmeticExpression is tried first:
+// it is the only alternative that can span an operator, and every other form is
+// a prefix of it. With qualifiedDataName/integerLiteral ahead of it, `TBL(I + 1)`
+// matched `I` here and left `+ 1` to be picked up as a SECOND subscript by
+// tableCall's `(COMMACHAR? subscript)*`, inflating a 1-D reference to 2-D.
+//
+// The removed `qualifiedDataName integerLiteral?` suffix was unsound for the
+// mirror-image reason: integerLiteral carries no sign, and COBOL relative
+// subscripting requires one, so the suffix matched nothing legitimate and only
+// ever merged two ADJACENT subscripts -- `TBL(I, 3)` collapsed into a single
+// subscript, whose data name TableCallImpl.addSubscript then discarded in favour
+// of the literal, silently reading the wrong element. Same for indexName.
+// (red-dragon-5wp3)
 subscript
-   : ALL | integerLiteral | qualifiedDataName integerLiteral? | indexName integerLiteral? | arithmeticExpression
+   : ALL | arithmeticExpression | integerLiteral | qualifiedDataName | indexName
    ;
 
 argument
