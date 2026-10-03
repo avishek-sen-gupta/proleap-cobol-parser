@@ -856,6 +856,10 @@ public class ScopeImpl extends CobolDivisionElementImpl implements Scope {
 				exitStatementType = ExitStatementType.PERFORM_CYCLE;
 			} else if (ctx.PERFORM() != null) {
 				exitStatementType = ExitStatementType.PERFORM;
+			} else if (ctx.PARAGRAPH() != null) {
+				exitStatementType = ExitStatementType.PARAGRAPH;
+			} else if (ctx.SECTION() != null) {
+				exitStatementType = ExitStatementType.SECTION;
 			} else {
 				exitStatementType = ExitStatementType.EXIT;
 			}

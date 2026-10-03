@@ -16,7 +16,7 @@ import io.proleap.cobol.asg.metamodel.procedure.Statement;
 public interface ExitStatement extends Statement {
 
 	enum ExitStatementType {
-		EXIT, PERFORM, PERFORM_CYCLE, PROGRAM
+		EXIT, PARAGRAPH, PERFORM, PERFORM_CYCLE, PROGRAM, SECTION
 	}
 
 	ExitStatementType getExitStatementType();
