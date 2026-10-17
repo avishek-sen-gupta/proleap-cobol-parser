@@ -1357,7 +1357,7 @@ disableStatement
 // display statement
 
 displayStatement
-   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? onExceptionClause? notOnExceptionClause? END_DISPLAY?
+   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? (onExceptionClause notOnExceptionClause?)? END_DISPLAY?
    ;
 
 displayOperand
