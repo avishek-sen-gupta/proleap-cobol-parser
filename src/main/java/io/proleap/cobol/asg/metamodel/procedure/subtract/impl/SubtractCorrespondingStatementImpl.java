@@ -40,7 +40,7 @@ public class SubtractCorrespondingStatementImpl extends CobolDivisionElementImpl
 			result = new MinuendCorrespondingImpl(programUnit, ctx);
 
 			// minuend
-			final Call minuendCall = createCall(ctx.qualifiedDataName());
+			final Call minuendCall = createCall(ctx.identifier());
 			result.setMinuendCall(minuendCall);
 
 			// rounded

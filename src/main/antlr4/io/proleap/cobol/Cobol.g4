@@ -2097,7 +2097,7 @@ subtractFromGivingStatement
    ;
 
 subtractCorrespondingStatement
-   : (CORRESPONDING | CORR) qualifiedDataName FROM subtractMinuendCorresponding
+   : (CORRESPONDING | CORR) identifier FROM subtractMinuendCorresponding
    ;
 
 subtractSubtrahend
@@ -2117,7 +2117,7 @@ subtractGiving
    ;
 
 subtractMinuendCorresponding
-   : qualifiedDataName ROUNDED?
+   : identifier ROUNDED?
    ;
 
 // terminate statement

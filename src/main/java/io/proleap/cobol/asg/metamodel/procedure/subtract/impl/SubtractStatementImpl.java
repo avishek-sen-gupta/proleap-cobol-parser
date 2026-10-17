@@ -61,7 +61,7 @@ public class SubtractStatementImpl extends StatementImpl implements SubtractStat
 			result = new SubtractCorrespondingStatementImpl(programUnit, ctx);
 
 			// subtrahend call
-			final Call subtrahendCall = createCall(ctx.qualifiedDataName());
+			final Call subtrahendCall = createCall(ctx.identifier());
 			result.setSubtrahendCall(subtrahendCall);
 
 			// minuend
