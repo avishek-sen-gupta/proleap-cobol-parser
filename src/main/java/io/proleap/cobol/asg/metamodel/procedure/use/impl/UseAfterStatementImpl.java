@@ -49,6 +49,8 @@ public class UseAfterStatementImpl extends CobolDivisionElementImpl implements U
 				type = AfterOn.AfterOnType.INPUT_OUTPUT;
 			} else if (ctx.OUTPUT() != null) {
 				type = AfterOn.AfterOnType.OUTPUT;
+			} else if (ctx.EXTEND() != null) {
+				type = AfterOn.AfterOnType.EXTEND;
 			} else {
 				type = null;
 			}

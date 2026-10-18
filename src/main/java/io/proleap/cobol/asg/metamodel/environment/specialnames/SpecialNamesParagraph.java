@@ -53,6 +53,9 @@ public interface SpecialNamesParagraph extends CobolDivisionElement {
 
 	ClassClause getClassClause();
 
+	/** Every CLASS clause, in source order. */
+	List<ClassClause> getClassClauses();
+
 	CurrencySignClause getCurrencySignClause();
 
 	DecimalPointClause getDecimalPointClause();

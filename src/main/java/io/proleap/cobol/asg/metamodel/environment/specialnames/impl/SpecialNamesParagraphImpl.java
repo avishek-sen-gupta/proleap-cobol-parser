@@ -58,6 +58,8 @@ public class SpecialNamesParagraphImpl extends CobolDivisionElementImpl implemen
 
 	protected ClassClause classClause;
 
+	protected List<ClassClause> classClauses = new ArrayList<ClassClause>();
+
 	protected final SpecialNamesParagraphContext ctx;
 
 	protected CurrencySignClause currencySignClause;
@@ -237,6 +239,7 @@ public class SpecialNamesParagraphImpl extends CobolDivisionElementImpl implemen
 			}
 
 			classClause = result;
+			classClauses.add(result);
 			registerASGElement(result);
 		}
 
@@ -403,6 +406,11 @@ public class SpecialNamesParagraphImpl extends CobolDivisionElementImpl implemen
 	@Override
 	public ClassClause getClassClause() {
 		return classClause;
+	}
+
+	@Override
+	public List<ClassClause> getClassClauses() {
+		return classClauses;
 	}
 
 	@Override
