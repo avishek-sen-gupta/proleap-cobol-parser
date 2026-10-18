@@ -1462,8 +1462,10 @@ evaluateWhen
    : WHEN evaluateCondition evaluateAlsoCondition*
    ;
 
+// TRUE and FALSE are the truth-value selection objects; ahead of evaluateValue,
+// whose literal would otherwise take them (ANSI X3.23-1985 EVALUATE).
 evaluateCondition
-   : ANY | NOT? evaluateValue evaluateThrough? | condition | booleanLiteral
+   : ANY | NOT? booleanLiteral | NOT? evaluateValue evaluateThrough? | condition
    ;
 
 evaluateThrough

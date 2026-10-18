@@ -83,9 +83,7 @@
 																(integerLiteral 234)))))) 
 											(evaluateAlsoCondition ALSO 
 												(evaluateCondition 
-													(evaluateValue 
-														(literal 
-															(booleanLiteral TRUE))))) 
+													(booleanLiteral TRUE))) 
 											(evaluateAlsoCondition ALSO 
 												(evaluateCondition 
 													(condition 
@@ -197,9 +195,7 @@
 																									(integerLiteral 9)))))))) )))))))) 
 											(evaluateAlsoCondition ALSO 
 												(evaluateCondition 
-													(evaluateValue 
-														(literal 
-															(booleanLiteral FALSE))))) 
+													(booleanLiteral FALSE))) 
 											(evaluateAlsoCondition ALSO 
 												(evaluateCondition 
 													(condition 
