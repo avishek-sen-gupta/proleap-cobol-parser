@@ -214,11 +214,15 @@ familyPhrase
    ;
 
 replaceable
-   : literal | cobolWord | pseudoText | charDataLine
+   : literal | cobolWord | pseudoText | charDataLine (NEWLINE+ qualificationLine)*
    ;
 
 replacement
-   : literal | cobolWord | pseudoText | charDataLine
+   : literal | cobolWord | pseudoText | charDataLine (NEWLINE+ qualificationLine)*
+   ;
+
+qualificationLine
+   : (OF | IN | LPARENCHAR) charDataLine?
    ;
 
 // eject statement

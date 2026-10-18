@@ -1,0 +1,9 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. QUALIFIED.
+       PROCEDURE DIVISION.
+           MOVE TRUE-Q-04 OF TRUE-Q-03
+                                             IN TRUE-Q-02 TO AREA-1.
+           MOVE Z (2, 1, 1) TO AREA-2.
+           MOVE TRUE-3 TO AREA-3.
+           MOVE Z
+                             (1, 2, 1) TO AREA-4.
