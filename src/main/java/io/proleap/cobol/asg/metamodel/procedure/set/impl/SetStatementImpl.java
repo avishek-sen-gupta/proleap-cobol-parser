@@ -90,10 +90,8 @@ public class SetStatementImpl extends StatementImpl implements SetStatement {
 				result.addTo(setToContext);
 			}
 
-			// by
-			for (final SetToValueContext setToValueContext : ctx.setToValue()) {
-				result.addValue(setToValueContext);
-			}
+			// value
+			result.addValue(ctx.setToValue());
 
 			setTos.add(result);
 			registerASGElement(result);

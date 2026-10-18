@@ -48,7 +48,7 @@ public class SetToStatementTest extends CobolTestBase {
 			{
 				final SetTo setTo = setStatement.getSetTos().get(0);
 				assertEquals(2, setTo.getTos().size());
-				assertEquals(2, setTo.getValues().size());
+				assertEquals(1, setTo.getValues().size());
 
 				{
 					final To to = setTo.getTos().get(0);
@@ -75,22 +75,12 @@ public class SetToStatementTest extends CobolTestBase {
 					assertEquals(CallType.UNDEFINED_CALL, callValueStmt.getCall().getCallType());
 				}
 
-				{
-					final Value value = setTo.getValues().get(1);
-					assertEquals(Value.ValueType.CALL, value.getValueType());
-
-					final ValueStmt valueStmt = value.getValueStmt();
-					assertNotNull(valueStmt);
-
-					final CallValueStmt callValueStmt = (CallValueStmt) valueStmt;
-					assertEquals(CallType.UNDEFINED_CALL, callValueStmt.getCall().getCallType());
-				}
 			}
 
 			{
 				final SetTo setTo = setStatement.getSetTos().get(1);
 				assertEquals(1, setTo.getTos().size());
-				assertEquals(2, setTo.getValues().size());
+				assertEquals(1, setTo.getValues().size());
 
 				{
 					final To to = setTo.getTos().get(0);
@@ -101,17 +91,6 @@ public class SetToStatementTest extends CobolTestBase {
 
 				{
 					final Value value = setTo.getValues().get(0);
-					assertEquals(Value.ValueType.CALL, value.getValueType());
-
-					final ValueStmt valueStmt = value.getValueStmt();
-					assertNotNull(valueStmt);
-
-					final CallValueStmt callValueStmt = (CallValueStmt) valueStmt;
-					assertEquals(CallType.UNDEFINED_CALL, callValueStmt.getCall().getCallType());
-				}
-
-				{
-					final Value value = setTo.getValues().get(1);
 					assertEquals(Value.ValueType.ON, value.getValueType());
 					assertNull(value.getValueStmt());
 				}

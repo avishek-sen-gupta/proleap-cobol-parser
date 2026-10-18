@@ -1992,8 +1992,9 @@ setStatement
    : SET (setToStatement+ | setUpDownByStatement)
    ;
 
+// One sending value per TO phrase; SET A TO 1 B TO 2 is two phrases.
 setToStatement
-   : setTo+ TO setToValue+
+   : setTo+ TO setToValue
    ;
 
 setUpDownByStatement
