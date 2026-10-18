@@ -196,8 +196,10 @@ alphabetThrough
    : (THROUGH | THRU) literal
    ;
 
+// Each ALSO names one literal (ANSI X3.23-1985 ALPHABET clause); a literal
+// after it starts the next alphabetLiterals group.
 alphabetAlso
-   : ALSO literal+
+   : ALSO literal
    ;
 
 alphabetClauseFormat2

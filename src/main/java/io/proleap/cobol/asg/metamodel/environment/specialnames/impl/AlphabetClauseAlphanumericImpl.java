@@ -56,12 +56,7 @@ public class AlphabetClauseAlphanumericImpl extends AlphabetClauseImpl implement
 		 * also
 		 */
 		for (final AlphabetAlsoContext alphabetAlsoContext : ctx.alphabetAlso()) {
-			final List<LiteralContext> literalContexts = alphabetAlsoContext.literal();
-
-			for (final LiteralContext literalContext : literalContexts) {
-				final ValueStmt characterSetAlsoValueStmt = createValueStmt(literalContext);
-				characterSetValueStmts.add(characterSetAlsoValueStmt);
-			}
+			characterSetValueStmts.add(createValueStmt(alphabetAlsoContext.literal()));
 		}
 	}
 
