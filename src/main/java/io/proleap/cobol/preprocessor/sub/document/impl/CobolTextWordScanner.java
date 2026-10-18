@@ -11,10 +11,14 @@ package io.proleap.cobol.preprocessor.sub.document.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.proleap.cobol.preprocessor.CobolPreprocessor;
+
 /**
  * Splits text into the text-words that COPY REPLACING and REPLACE compare.
  */
 public class CobolTextWordScanner {
+
+	private static final String COMMENT_TAG = CobolPreprocessor.COMMENT_TAG;
 
 	private static boolean isQuote(final char c) {
 		return c == '"' || c == '\'';
@@ -28,8 +32,27 @@ public class CobolTextWordScanner {
 		return Character.isWhitespace(c);
 	}
 
+	private boolean isComment(final String text, final int i) {
+		final int afterTag = i + COMMENT_TAG.length();
+		return text.startsWith(COMMENT_TAG, i) && (afterTag == text.length() || isSpace(text.charAt(afterTag)));
+	}
+
+	private boolean isFollowedBySpace(final String text, final int i) {
+		return i + 1 == text.length() || isSpace(text.charAt(i + 1));
+	}
+
+	private boolean isIgnoredSeparator(final String text, final int i) {
+		final char c = text.charAt(i);
+		return isSpace(c) || (c == ',' || c == ';') && isFollowedBySpace(text, i);
+	}
+
+	private int lineEnd(final String text, final int i) {
+		final int newline = text.indexOf('\n', i);
+		return newline < 0 ? text.length() : newline;
+	}
+
 	private boolean isPeriodSeparator(final String text, final int i) {
-		return text.charAt(i) == '.' && (i + 1 == text.length() || isSpace(text.charAt(i + 1)));
+		return text.charAt(i) == '.' && isFollowedBySpace(text, i);
 	}
 
 	private int literalEnd(final String text, final int open) {
@@ -54,8 +77,10 @@ public class CobolTextWordScanner {
 		int i = 0;
 
 		while (i < text.length()) {
-			if (isSpace(text.charAt(i))) {
+			if (isIgnoredSeparator(text, i)) {
 				i++;
+			} else if (isComment(text, i)) {
+				i = lineEnd(text, i);
 			} else {
 				final int end = wordEnd(text, i);
 				words.add(new CobolTextWord(text.substring(i, end), i, end));
@@ -80,7 +105,7 @@ public class CobolTextWordScanner {
 
 			if (isQuote(c)) {
 				i = literalEnd(text, i);
-			} else if (isSpace(c) || isSingleCharacterSeparator(c) || isPeriodSeparator(text, i)) {
+			} else if (isIgnoredSeparator(text, i) || isSingleCharacterSeparator(c) || isPeriodSeparator(text, i)) {
 				return i;
 			} else {
 				i++;

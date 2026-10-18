@@ -1,0 +1,6 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SEPARATORS.
+       PROCEDURE DIVISION.
+
+           MOVE "PASS" TO P-OR-F.
+           MOVE "WIN" TO  W-OR-L.
