@@ -19,6 +19,24 @@
 
 grammar Cobol;
 
+@parser::members {
+	/**
+	 * True when the data name at LT(1) is followed by a left parenthesis that no
+	 * separator comma precedes: that parenthesis subscripts or reference-modifies
+	 * the name. A separator comma is a space to the grammar (SEPARATOR is hidden),
+	 * but in a FUNCTION argument list it ends the argument. A qualified name is
+	 * left to qualifiedDataName, whose inTable already takes the subscript.
+	 */
+	private boolean parenthesisFollowsName() {
+		if (_input.LA(2) != LPARENCHAR) {
+			return false;
+		}
+		final java.util.List<Token> hidden =
+				((BufferedTokenStream) _input).getHiddenTokensToLeft(_input.LT(2).getTokenIndex());
+		return hidden == null || hidden.stream().noneMatch(t -> t.getType() == SEPARATOR);
+	}
+}
+
 startRule : compilationUnit EOF;
 
 compilationUnit
@@ -2370,8 +2388,11 @@ abbreviation
 
 // identifier ----------------------------------
 
+// A data name followed directly by a left parenthesis is a tableCall: in a
+// FUNCTION argument list `TBL(I)` could otherwise read as the argument TBL
+// followed by the argument (I), and ANTLR would take the lower alternative.
 identifier
-   : qualifiedDataName | tableCall | functionCall | specialRegister
+   : {parenthesisFollowsName()}? tableCall | qualifiedDataName | functionCall | specialRegister
    ;
 
 tableCall
