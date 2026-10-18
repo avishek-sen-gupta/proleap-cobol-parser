@@ -1,0 +1,7 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TEXTWORD.
+       PROCEDURE DIVISION.
+           ADD +2 TO WRK-001.
+           SUBTRACT -3 FROM WRK-901.
+           MOVE WRK-1 (-3) TO WRK-1A1.
+           DISPLAY " 1 ".
