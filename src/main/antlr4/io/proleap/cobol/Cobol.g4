@@ -1684,8 +1684,9 @@ mergeGiving
 
 // move statement
 
+// MOVE ALL literal is the figurative constant ALL literal in the sending area.
 moveStatement
-   : MOVE ALL? (moveToStatement | moveCorrespondingToStatement)
+   : MOVE (moveToStatement | moveCorrespondingToStatement)
    ;
 
 moveToStatement

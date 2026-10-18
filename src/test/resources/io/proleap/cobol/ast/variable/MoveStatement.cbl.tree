@@ -21,11 +21,13 @@
 														(cobolWord TESTVAR)))))))) .\n         ) 
 						(sentence 
 							(statement 
-								(moveStatement MOVE ALL 
+								(moveStatement MOVE 
 									(moveToStatement 
 										(moveToSendingArea 
 											(literal 
-												(figurativeConstant ZEROS))) TO 
+												(figurativeConstant ALL 
+													(literal 
+														(figurativeConstant ZEROS))))) TO 
 										(identifier 
 											(qualifiedDataName 
 												(qualifiedDataNameFormat1 
