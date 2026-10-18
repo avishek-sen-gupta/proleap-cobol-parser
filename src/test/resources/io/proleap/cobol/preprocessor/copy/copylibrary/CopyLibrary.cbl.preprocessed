@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. COPYLIB.
+       PROCEDURE DIVISION.
+           DISPLAY "A".
+
+           DISPLAY "B".
+
+           DISPLAY "SYSLIB".
+
+           DISPLAY "SYSLIB".

@@ -11,6 +11,7 @@ package io.proleap.cobol.preprocessor.sub.document.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -21,10 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import io.proleap.cobol.CobolPreprocessorBaseListener;
 import io.proleap.cobol.CobolPreprocessorParser;
+import io.proleap.cobol.CobolPreprocessorParser.CopyLibraryContext;
 import io.proleap.cobol.CobolPreprocessorParser.CopySourceContext;
 import io.proleap.cobol.CobolPreprocessorParser.ReplaceClauseContext;
 import io.proleap.cobol.CobolPreprocessorParser.ReplacingPhraseContext;
 import io.proleap.cobol.asg.params.CobolParserParams;
+import io.proleap.cobol.asg.params.impl.CobolParserParamsImpl;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 import io.proleap.cobol.preprocessor.exception.CobolPreprocessorException;
 import io.proleap.cobol.preprocessor.impl.CobolPreprocessorImpl;
@@ -316,7 +319,8 @@ public class CobolDocumentParserListenerImpl extends CobolPreprocessorBaseListen
 		pop();
 	}
 
-	protected File findCopyBook(final CopySourceContext copySource, final CobolParserParams params) {
+	protected File findCopyBook(final CopySourceContext copySource, final CobolParserParams sourceParams) {
+		final CobolParserParams params = libraryParams(copySource, sourceParams);
 		final File result;
 
 		if (copySource.cobolWord() != null) {
@@ -330,6 +334,26 @@ public class CobolDocumentParserListenerImpl extends CobolPreprocessorBaseListen
 			result = null;
 		}
 
+		return result;
+	}
+
+	protected CobolParserParams libraryParams(final CopySourceContext copySource, final CobolParserParams params) {
+		final CopyLibraryContext copyLibrary = copySource.copyLibrary();
+		final File library = copyLibrary == null || copyLibrary.cobolWord() == null ? null
+				: params.getCopyBookLibraries().get(copyLibrary.cobolWord().getText().toUpperCase(Locale.ROOT));
+
+		if (library == null) {
+			return params;
+		}
+
+		final CobolParserParams result = new CobolParserParamsImpl();
+		result.setCharset(params.getCharset());
+		result.setCopyBookDirectories(List.of(library));
+		result.setCopyBookExtensions(params.getCopyBookExtensions());
+		result.setCopyBookLibraries(params.getCopyBookLibraries());
+		result.setDialect(params.getDialect());
+		result.setFormat(params.getFormat());
+		result.setIgnoreSyntaxErrors(params.getIgnoreSyntaxErrors());
 		return result;
 	}
 

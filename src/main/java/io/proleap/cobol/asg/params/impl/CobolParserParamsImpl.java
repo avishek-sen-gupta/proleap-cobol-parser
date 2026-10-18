@@ -12,6 +12,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import io.proleap.cobol.asg.params.CobolDialect;
 import io.proleap.cobol.asg.params.CobolParserParams;
@@ -24,6 +25,8 @@ public class CobolParserParamsImpl implements CobolParserParams {
 	protected List<File> copyBookDirectories;
 
 	protected List<String> copyBookExtensions;
+
+	protected Map<String, File> copyBookLibraries = Map.of();
 
 	protected List<File> copyBookFiles;
 
@@ -46,6 +49,11 @@ public class CobolParserParamsImpl implements CobolParserParams {
 	@Override
 	public List<String> getCopyBookExtensions() {
 		return copyBookExtensions;
+	}
+
+	@Override
+	public Map<String, File> getCopyBookLibraries() {
+		return copyBookLibraries;
 	}
 
 	@Override
@@ -81,6 +89,11 @@ public class CobolParserParamsImpl implements CobolParserParams {
 	@Override
 	public void setCopyBookExtensions(final List<String> copyBookExtensions) {
 		this.copyBookExtensions = copyBookExtensions;
+	}
+
+	@Override
+	public void setCopyBookLibraries(final Map<String, File> copyBookLibraries) {
+		this.copyBookLibraries = copyBookLibraries;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ package io.proleap.cobol.asg.params;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 
 import io.proleap.cobol.preprocessor.CobolPreprocessor.CobolSourceFormatEnum;
 
@@ -25,6 +26,11 @@ public interface CobolParserParams {
 
 	List<String> getCopyBookExtensions();
 
+	/**
+	 * The directory of each COBOL library, keyed by library-name in upper case.
+	 */
+	Map<String, File> getCopyBookLibraries();
+
 	List<File> getCopyBookFiles();
 
 	CobolDialect getDialect();
@@ -38,6 +44,8 @@ public interface CobolParserParams {
 	void setCopyBookDirectories(List<File> copyBookDirectories);
 
 	void setCopyBookExtensions(List<String> copyBookExtensions);
+
+	void setCopyBookLibraries(Map<String, File> copyBookLibraries);
 
 	void setCopyBookFiles(List<File> copyBookFiles);
 

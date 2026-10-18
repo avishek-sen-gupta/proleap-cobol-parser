@@ -176,7 +176,7 @@ copyStatement
    ;
 
 copySource
-   : (literal | cobolWord | filename) ((OF | IN) copyLibrary)?
+   : (literal | cobolWord | filename) (NEWLINE* (OF | IN) NEWLINE* copyLibrary)?
    ;
 
 copyLibrary
