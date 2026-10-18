@@ -246,8 +246,17 @@ environmentSwitchNameClause
    : environmentName IS? mnemonicName environmentSwitchNameSpecialNamesStatusPhrase? | environmentSwitchNameSpecialNamesStatusPhrase
    ;
 
+// Each status phrase names one condition-name (ANSI X3.23-1985 SPECIAL-NAMES).
 environmentSwitchNameSpecialNamesStatusPhrase
-   : ON STATUS? IS? condition (OFF STATUS? IS? condition)? | OFF STATUS? IS? condition (ON STATUS? IS? condition)?
+   : switchOnStatus switchOffStatus? | switchOffStatus switchOnStatus?
+   ;
+
+switchOnStatus
+   : ON STATUS? IS? conditionName
+   ;
+
+switchOffStatus
+   : OFF STATUS? IS? conditionName
    ;
 
 odtClause
