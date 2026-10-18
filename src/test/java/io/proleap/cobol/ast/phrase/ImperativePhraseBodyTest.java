@@ -71,4 +71,13 @@ public class ImperativePhraseBodyTest {
 		assertNotNull(first(call, CobolParser.CallStatementContext.class).notOnExceptionClause());
 		assertNotNull(first(call, CobolParser.AddStatementContext.class).notOnSizeErrorPhrase());
 	}
+
+	@Test
+	public void aDelimitedStatementWithOnlyANotPhraseIsImperative() {
+		final ParseTree read = parse("READ F AT END ADD 1 TO X NOT ON SIZE ERROR DISPLAY \"OK\" END-ADD END-READ");
+		final CobolParser.AddStatementContext add = first(read, CobolParser.AddStatementContext.class);
+		assertNotNull(add.notOnSizeErrorPhrase());
+		assertNotNull(add.END_ADD());
+		assertNull(first(read, CobolParser.ReadStatementContext.class).notAtEndPhrase());
+	}
 }

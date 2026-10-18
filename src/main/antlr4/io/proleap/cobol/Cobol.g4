@@ -26,7 +26,9 @@ grammar Cobol;
 	 * statement being parsed. Such a body is imperative (ANSI X3.23-1985
 	 * conditional and imperative statements), so a statement inside it may not
 	 * take a NOT phrase without its own positive phrase: that NOT belongs to the
-	 * enclosing statement.
+	 * enclosing statement. A statement delimited by its END-x is imperative
+	 * whatever its phrases (ANSI X3.23-1985 delimited scope statements), so in
+	 * a phrase body a NOT phrase alone is accepted before the statement's END-x.
 	 */
 	private int imperativeDepth = 0;
 
@@ -1206,7 +1208,7 @@ statement
 // accept statement
 
 acceptStatement
-   : ACCEPT identifier (acceptFromDateStatement | acceptFromEscapeKeyStatement | acceptFromMnemonicStatement | acceptMessageCountStatement)? (onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_ACCEPT?
+   : ACCEPT identifier (acceptFromDateStatement | acceptFromEscapeKeyStatement | acceptFromMnemonicStatement | acceptMessageCountStatement)? ((onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_ACCEPT? | (onExceptionClause notOnExceptionClause? | notOnExceptionClause)? END_ACCEPT)
    ;
 
 acceptFromDateStatement
@@ -1228,7 +1230,7 @@ acceptMessageCountStatement
 // add statement
 
 addStatement
-   : ADD (addToStatement | addToGivingStatement | addCorrespondingStatement) (onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_ADD?
+   : ADD (addToStatement | addToGivingStatement | addCorrespondingStatement) ((onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_ADD? | (onSizeErrorPhrase notOnSizeErrorPhrase? | notOnSizeErrorPhrase)? END_ADD)
    ;
 
 addToStatement
@@ -1278,7 +1280,7 @@ alterProceedTo
 // call statement
 
 callStatement
-   : CALL (identifier | literal) callUsingPhrase? callGivingPhrase? onOverflowPhrase? (onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_CALL?
+   : CALL (identifier | literal) callUsingPhrase? callGivingPhrase? onOverflowPhrase? ((onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_CALL? | (onExceptionClause notOnExceptionClause? | notOnExceptionClause)? END_CALL)
    ;
 
 callUsingPhrase
@@ -1368,7 +1370,7 @@ closePortFileIOUsingAssociatedDataLength
 // compute statement
 
 computeStatement
-   : COMPUTE computeStore+ (EQUALCHAR | EQUAL) arithmeticExpression (onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_COMPUTE?
+   : COMPUTE computeStore+ (EQUALCHAR | EQUAL) arithmeticExpression ((onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_COMPUTE? | (onSizeErrorPhrase notOnSizeErrorPhrase? | notOnSizeErrorPhrase)? END_COMPUTE)
    ;
 
 computeStore
@@ -1384,7 +1386,7 @@ continueStatement
 // delete statement
 
 deleteStatement
-   : DELETE fileName RECORD? (invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_DELETE?
+   : DELETE fileName RECORD? ((invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_DELETE? | (invalidKeyPhrase notInvalidKeyPhrase? | notInvalidKeyPhrase)? END_DELETE)
    ;
 
 // disable statement
@@ -1396,7 +1398,7 @@ disableStatement
 // display statement
 
 displayStatement
-   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? (onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_DISPLAY?
+   : DISPLAY displayOperand+ displayAt? displayUpon? displayWith? ((onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_DISPLAY? | (onExceptionClause notOnExceptionClause? | notOnExceptionClause)? END_DISPLAY)
    ;
 
 displayOperand
@@ -1418,7 +1420,7 @@ displayWith
 // divide statement
 
 divideStatement
-   : DIVIDE (identifier | literal) (divideIntoStatement | divideIntoGivingStatement | divideByGivingStatement) divideRemainder? (onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_DIVIDE?
+   : DIVIDE (identifier | literal) (divideIntoStatement | divideIntoGivingStatement | divideByGivingStatement) divideRemainder? ((onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_DIVIDE? | (onSizeErrorPhrase notOnSizeErrorPhrase? | notOnSizeErrorPhrase)? END_DIVIDE)
    ;
 
 divideIntoStatement
@@ -1731,7 +1733,7 @@ moveCorrespondingToSendingArea
 // multiply statement
 
 multiplyStatement
-   : MULTIPLY (identifier | literal) BY (multiplyRegular | multiplyGiving) (onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_MULTIPLY?
+   : MULTIPLY (identifier | literal) BY (multiplyRegular | multiplyGiving) ((onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_MULTIPLY? | (onSizeErrorPhrase notOnSizeErrorPhrase? | notOnSizeErrorPhrase)? END_MULTIPLY)
    ;
 
 multiplyRegular
@@ -1853,7 +1855,7 @@ purgeStatement
 // read statement
 
 readStatement
-   : READ fileName NEXT? RECORD? readInto? readWith? readKey? (invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? (atEndPhrase notAtEndPhrase? | {imperativeDepth == 0}? notAtEndPhrase)? END_READ?
+   : READ fileName NEXT? RECORD? readInto? readWith? readKey? ((invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? (atEndPhrase notAtEndPhrase? | {imperativeDepth == 0}? notAtEndPhrase)? END_READ? | (invalidKeyPhrase notInvalidKeyPhrase? | notInvalidKeyPhrase)? (atEndPhrase notAtEndPhrase? | notAtEndPhrase)? END_READ)
    ;
 
 readInto
@@ -1871,7 +1873,7 @@ readKey
 // receive statement
 
 receiveStatement
-   : RECEIVE (receiveFromStatement | receiveIntoStatement) (onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_RECEIVE?
+   : RECEIVE (receiveFromStatement | receiveIntoStatement) ((onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_RECEIVE? | (onExceptionClause notOnExceptionClause? | notOnExceptionClause)? END_RECEIVE)
    ;
 
 receiveFromStatement
@@ -1933,7 +1935,7 @@ returnInto
 // rewrite statement
 
 rewriteStatement
-   : REWRITE recordName rewriteFrom? (invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_REWRITE?
+   : REWRITE recordName rewriteFrom? ((invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_REWRITE? | (invalidKeyPhrase notInvalidKeyPhrase? | notInvalidKeyPhrase)? END_REWRITE)
    ;
 
 rewriteFrom
@@ -2080,7 +2082,7 @@ sortGiving
 // start statement
 
 startStatement
-   : START fileName startKey? (invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_START?
+   : START fileName startKey? ((invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_START? | (invalidKeyPhrase notInvalidKeyPhrase? | notInvalidKeyPhrase)? END_START)
    ;
 
 startKey
@@ -2100,7 +2102,7 @@ stopStatementGiving
 // string statement
 
 stringStatement
-   : STRING stringSendingPhrase+ stringIntoPhrase stringWithPointerPhrase? (onOverflowPhrase notOnOverflowPhrase? | {imperativeDepth == 0}? notOnOverflowPhrase)? END_STRING?
+   : STRING stringSendingPhrase+ stringIntoPhrase stringWithPointerPhrase? ((onOverflowPhrase notOnOverflowPhrase? | {imperativeDepth == 0}? notOnOverflowPhrase)? END_STRING? | (onOverflowPhrase notOnOverflowPhrase? | notOnOverflowPhrase)? END_STRING)
    ;
 
 stringSendingPhrase
@@ -2130,7 +2132,7 @@ stringWithPointerPhrase
 // subtract statement
 
 subtractStatement
-   : SUBTRACT (subtractFromStatement | subtractFromGivingStatement | subtractCorrespondingStatement) (onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_SUBTRACT?
+   : SUBTRACT (subtractFromStatement | subtractFromGivingStatement | subtractCorrespondingStatement) ((onSizeErrorPhrase notOnSizeErrorPhrase? | {imperativeDepth == 0}? notOnSizeErrorPhrase)? END_SUBTRACT? | (onSizeErrorPhrase notOnSizeErrorPhrase? | notOnSizeErrorPhrase)? END_SUBTRACT)
    ;
 
 subtractFromStatement
@@ -2174,7 +2176,7 @@ terminateStatement
 // unstring statement
 
 unstringStatement
-   : UNSTRING unstringSendingPhrase unstringIntoPhrase unstringWithPointerPhrase? unstringTallyingPhrase? (onOverflowPhrase notOnOverflowPhrase? | {imperativeDepth == 0}? notOnOverflowPhrase)? END_UNSTRING?
+   : UNSTRING unstringSendingPhrase unstringIntoPhrase unstringWithPointerPhrase? unstringTallyingPhrase? ((onOverflowPhrase notOnOverflowPhrase? | {imperativeDepth == 0}? notOnOverflowPhrase)? END_UNSTRING? | (onOverflowPhrase notOnOverflowPhrase? | notOnOverflowPhrase)? END_UNSTRING)
    ;
 
 unstringSendingPhrase
@@ -2238,7 +2240,7 @@ useDebugOn
 // write statement
 
 writeStatement
-   : WRITE recordName writeFromPhrase? writeAdvancingPhrase? (writeAtEndOfPagePhrase writeNotAtEndOfPagePhrase? | {imperativeDepth == 0}? writeNotAtEndOfPagePhrase)? (invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_WRITE?
+   : WRITE recordName writeFromPhrase? writeAdvancingPhrase? ((writeAtEndOfPagePhrase writeNotAtEndOfPagePhrase? | {imperativeDepth == 0}? writeNotAtEndOfPagePhrase)? (invalidKeyPhrase notInvalidKeyPhrase? | {imperativeDepth == 0}? notInvalidKeyPhrase)? END_WRITE? | (writeAtEndOfPagePhrase writeNotAtEndOfPagePhrase? | writeNotAtEndOfPagePhrase)? (invalidKeyPhrase notInvalidKeyPhrase? | notInvalidKeyPhrase)? END_WRITE)
    ;
 
 writeFromPhrase
@@ -2276,7 +2278,7 @@ writeNotAtEndOfPagePhrase
 // xml generate statement
 
 xmlGenerateStatement
-   : XML GENERATE identifier FROM identifier xmlCountInPhrase? (onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_XML?
+   : XML GENERATE identifier FROM identifier xmlCountInPhrase? ((onExceptionClause notOnExceptionClause? | {imperativeDepth == 0}? notOnExceptionClause)? END_XML? | (onExceptionClause notOnExceptionClause? | notOnExceptionClause)? END_XML)
    ;
 
 xmlCountInPhrase
