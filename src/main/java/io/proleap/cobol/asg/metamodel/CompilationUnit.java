@@ -22,7 +22,18 @@ public interface CompilationUnit extends ASGElement, NamedElement {
 
 	ProgramUnit getProgramUnit();
 
+	/**
+	 * Every program unit of this compilation unit, contained ones included, in the
+	 * order the ASG visitor met them: source order, each program before the programs
+	 * it contains.
+	 */
 	List<ProgramUnit> getProgramUnits();
+
+	/**
+	 * The program units that are not contained in another program: separately
+	 * compiled programs written one after another, in source order.
+	 */
+	List<ProgramUnit> getTopLevelProgramUnits();
 
 	CommonTokenStream getTokens();
 

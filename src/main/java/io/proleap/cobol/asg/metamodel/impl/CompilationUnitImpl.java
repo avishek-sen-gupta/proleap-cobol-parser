@@ -10,6 +10,7 @@ package io.proleap.cobol.asg.metamodel.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -97,6 +98,11 @@ public class CompilationUnitImpl extends ASGElementImpl implements CompilationUn
 	@Override
 	public List<ProgramUnit> getProgramUnits() {
 		return programUnits;
+	}
+
+	@Override
+	public List<ProgramUnit> getTopLevelProgramUnits() {
+		return ctx.programUnit().stream().map(unit -> (ProgramUnit) getASGElement(unit)).collect(Collectors.toList());
 	}
 
 	@Override

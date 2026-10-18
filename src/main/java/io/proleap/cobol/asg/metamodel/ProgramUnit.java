@@ -8,6 +8,8 @@
 
 package io.proleap.cobol.asg.metamodel;
 
+import java.util.List;
+
 import io.proleap.cobol.CobolParser.DataDivisionContext;
 import io.proleap.cobol.CobolParser.EnvironmentDivisionContext;
 import io.proleap.cobol.CobolParser.IdentificationDivisionContext;
@@ -26,6 +28,12 @@ public interface ProgramUnit extends CompilationUnitElement {
 	IdentificationDivision addIdentificationDivision(IdentificationDivisionContext ctx);
 
 	ProcedureDivision addProcedureDivision(ProcedureDivisionContext ctx);
+
+	/**
+	 * The program units directly contained in this one, in source order: each written
+	 * after this program's divisions and before its END PROGRAM header.
+	 */
+	List<ProgramUnit> getContainedProgramUnits();
 
 	DataDivision getDataDivision();
 

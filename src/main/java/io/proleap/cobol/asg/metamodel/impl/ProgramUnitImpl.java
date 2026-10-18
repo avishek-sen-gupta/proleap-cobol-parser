@@ -8,6 +8,9 @@
 
 package io.proleap.cobol.asg.metamodel.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +148,11 @@ public class ProgramUnitImpl extends CompilationUnitElementImpl implements Progr
 	protected ASGElement getASGElement(final ParserRuleContext ctx) {
 		final ASGElement result = compilationUnit.getProgram().getASGElementRegistry().getASGElement(ctx);
 		return result;
+	}
+
+	@Override
+	public List<ProgramUnit> getContainedProgramUnits() {
+		return ctx.programUnit().stream().map(unit -> (ProgramUnit) getASGElement(unit)).collect(Collectors.toList());
 	}
 
 	@Override
