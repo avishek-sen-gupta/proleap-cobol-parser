@@ -1610,12 +1610,14 @@ inspectReplacingCharacters
    : (CHARACTER | CHARACTERS) inspectBy inspectBeforeAfter*
    ;
 
+// An ALL after a pattern starts the next ALL phrase; it is not the figurative
+// ALL literal as a further pattern of this one (ANSI X3.23-1985 INSPECT).
 inspectAllLeadings
-   : (ALL | LEADING) inspectAllLeading+
+   : (ALL | LEADING) inspectAllLeading ({_input.LA(1) != ALL}? inspectAllLeading)*
    ;
 
 inspectReplacingAllLeadings
-   : (ALL | LEADING | FIRST) inspectReplacingAllLeading+
+   : (ALL | LEADING | FIRST) inspectReplacingAllLeading ({_input.LA(1) != ALL}? inspectReplacingAllLeading)*
    ;
 
 inspectAllLeading
