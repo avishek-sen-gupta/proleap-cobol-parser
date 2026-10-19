@@ -57,7 +57,7 @@ public interface FileControlEntry extends CobolDivisionElement, NamedElement {
 
 	AccessModeClause getAccessModeClause();
 
-	AlternateRecordKeyClause getAlternateRecordKeyClause();
+	List<AlternateRecordKeyClause> getAlternateRecordKeyClauses();
 
 	AssignClause getAssignClause();
 

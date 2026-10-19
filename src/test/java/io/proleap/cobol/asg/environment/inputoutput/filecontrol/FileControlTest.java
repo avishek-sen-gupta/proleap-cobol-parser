@@ -113,7 +113,7 @@ public class FileControlTest extends CobolTestBase {
 		}
 
 		{
-			final AlternateRecordKeyClause alternateRecordKeyClause = fileControlEntry.getAlternateRecordKeyClause();
+			final AlternateRecordKeyClause alternateRecordKeyClause = fileControlEntry.getAlternateRecordKeyClauses().get(0);
 			assertNotNull(alternateRecordKeyClause);
 			assertNotNull(alternateRecordKeyClause.getDataCall());
 

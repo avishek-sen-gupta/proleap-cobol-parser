@@ -54,7 +54,7 @@ public class FileControlEntryImpl extends CobolDivisionElementImpl implements Fi
 
 	protected AccessModeClause accessModeClause;
 
-	protected AlternateRecordKeyClause alternateRecordKeyClause;
+	protected final List<AlternateRecordKeyClause> alternateRecordKeyClauses = new ArrayList<AlternateRecordKeyClause>();
 
 	protected AssignClause assignClause;
 
@@ -137,7 +137,9 @@ public class FileControlEntryImpl extends CobolDivisionElementImpl implements Fi
 				result.setPasswordClause(passwordClause);
 			}
 
-			alternateRecordKeyClause = result;
+			result.setDuplicates(ctx.DUPLICATES() != null);
+
+			alternateRecordKeyClauses.add(result);
 			registerASGElement(result);
 		}
 
@@ -422,8 +424,8 @@ public class FileControlEntryImpl extends CobolDivisionElementImpl implements Fi
 	}
 
 	@Override
-	public AlternateRecordKeyClause getAlternateRecordKeyClause() {
-		return alternateRecordKeyClause;
+	public List<AlternateRecordKeyClause> getAlternateRecordKeyClauses() {
+		return alternateRecordKeyClauses;
 	}
 
 	@Override

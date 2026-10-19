@@ -17,7 +17,11 @@ public interface AlternateRecordKeyClause extends CobolDivisionElement {
 
 	PasswordClause getPasswordClause();
 
+	boolean isDuplicates();
+
 	void setDataCall(Call dataCall);
+
+	void setDuplicates(boolean duplicates);
 
 	void setPasswordClause(PasswordClause passwordClause);
 

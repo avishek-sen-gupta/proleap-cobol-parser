@@ -21,6 +21,8 @@ public class AlternateRecordKeyClauseImpl extends CobolDivisionElementImpl imple
 
 	protected Call dataCall;
 
+	protected boolean duplicates;
+
 	protected PasswordClause passwordClause;
 
 	public AlternateRecordKeyClauseImpl(final ProgramUnit programUnit, final AlternateRecordKeyClauseContext ctx) {
@@ -40,8 +42,18 @@ public class AlternateRecordKeyClauseImpl extends CobolDivisionElementImpl imple
 	}
 
 	@Override
+	public boolean isDuplicates() {
+		return duplicates;
+	}
+
+	@Override
 	public void setDataCall(final Call dataCall) {
 		this.dataCall = dataCall;
+	}
+
+	@Override
+	public void setDuplicates(final boolean duplicates) {
+		this.duplicates = duplicates;
 	}
 
 	@Override

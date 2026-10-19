@@ -40,7 +40,7 @@ public class AlternateKeyWithoutRecordTest extends CobolTestBase {
 				.getFileControlEntry("TEACHER");
 		assertNotNull(fileControlEntry);
 
-		final AlternateRecordKeyClause alternateRecordKeyClause = fileControlEntry.getAlternateRecordKeyClause();
+		final AlternateRecordKeyClause alternateRecordKeyClause = fileControlEntry.getAlternateRecordKeyClauses().get(0);
 		assertNotNull(alternateRecordKeyClause);
 		assertEquals("SOMEDATANAME2", alternateRecordKeyClause.getDataCall().getName());
 	}
